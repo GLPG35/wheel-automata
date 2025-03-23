@@ -1,0 +1,98 @@
+.modal {
+	position: absolute;
+	right: -750%;
+	display: flex;
+	flex-direction: column;
+	font-size: 1em;
+	max-width: 15em;
+
+	.title {
+		width: calc(100% + 2em);
+		padding: 0.5em;
+		padding-left: 2em;
+		background-color: var(--fg-color);
+		color: var(--er-color);
+		position: relative;
+
+		&::before {
+			position: absolute;
+			content: '';
+			height: 1em;
+			aspect-ratio: 1 / 1;
+			width: auto;
+			background-color: var(--bg-color);
+			left: 0.5em;
+			transition: 0.15s ease-out;
+		}
+	}
+
+	.description {
+		padding: 0.5em;
+		display: flex;
+		flex-direction: column;
+		background-color: var(--ac-color);
+		gap: 0.5em;
+		text-wrap: balance;
+		width: calc(100% + 2em);
+	}
+
+	.buttons {
+		display: flex;
+		gap: 0.5em;
+		width: calc(100% + 2em);
+		margin-top: 0.5em;
+
+		button {
+			padding: 0.5em;
+			padding-left: 2em;
+			background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+			background-size: 200% 100%;
+			background-position: right;
+			color: var(--fg-color);
+			cursor: pointer;
+			user-select: none;
+			position: relative;
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			flex: 1;
+			font-weight: 500;
+
+			&::before {
+				position: absolute;
+				content: '';
+				height: 1em;
+				aspect-ratio: 1 / 1;
+				width: auto;
+				background-color: var(--fg-color);
+				left: 0.5em;
+				transition: 0.15s ease-out;
+			}
+
+			&::after {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: calc(100% + 0.5em);
+				border-block: 0.15em solid var(--fg-color);
+				left: 0;
+				opacity: 0;
+				transition: 0.2s ease-out;
+			}
+
+			&:hover {
+				background-position: left;
+				color: var(--bg-color);
+
+				&::after {
+					opacity: 1;
+				}
+
+				&::before {
+					background-color: var(--bg-color);
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,232 @@
+.wheelWrapper {
+	flex: 4;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 2em;
+	overflow: hidden;
+
+	.wheelBox {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		height: 60%;
+		aspect-ratio: 1 / 1;
+		width: auto;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: -1em;
+			width: 0.9em;
+			height: 2.1em;
+			background-color: var(--fg-color);
+			z-index: 10;
+			clip-path: polygon(50% 0, 100% calc(100% / 3), 50% 100%, 0 calc(100% / 3), 50% 0);
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: -0.5em;
+			width: 0.25em;
+			height: 0.25em;
+			border-radius: 50vh;
+			background-color: var(--bg-color);
+			z-index: 11;
+		}
+	}
+
+	.wheel {
+		height: 100%;
+		width: 100%;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 50vh;
+		overflow: hidden;
+		border: 2px solid var(--fg-color);
+		
+		.item {
+			position: absolute;
+			top: 0;
+			height: 50%;
+			clip-path: polygon(0 0, 100% 0, 50% 100%, 0 0);
+			transform-origin: bottom;
+
+			.name {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				overflow: hidden;
+
+				p {
+					rotate: 90deg;
+					width: 80%;
+					translate: 0 -80%;
+					width: max-content;
+					text-align: center;
+					font-size: 1.2em;
+				}
+			}
+		}
+
+		.divider {
+			position: absolute;
+			top: 0;
+			height: 50%;
+			width: 2px;
+			background-color: var(--fg-color);
+			transform-origin: bottom;
+			z-index: 3;
+		}
+	}
+
+	.actions {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.5em;
+		width: 100%;
+		
+		button {
+			padding: 0.5em;
+			padding-left: 2em;
+			background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+			background-size: 200% 100%;
+			background-position: right;
+			color: var(--fg-color);
+			cursor: pointer;
+			user-select: none;
+			position: relative;
+			transition: background-position 0.3s cubic-bezier(0.08,0.82,0.17,1), color 0.3s cubic-bezier(0.08,0.82,0.17,1);
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			font-weight: 500;
+
+			&.disabled {
+				cursor: not-allowed;
+			}
+
+			&::before {
+				position: absolute;
+				content: '';
+				height: 1em;
+				aspect-ratio: 1 / 1;
+				width: auto;
+				background-color: var(--fg-color);
+				left: 0.5em;
+				transition: 0.15s ease-out;
+			}
+
+			&::after {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: calc(100% + 0.5em);
+				border-block: 0.15em solid var(--fg-color);
+				left: 0;
+				opacity: 0;
+				transition: 0.2s ease-out;
+			}
+
+			&:hover:not(.disabled) {
+				background-position: left;
+				color: var(--bg-color);
+
+				&::after {
+					opacity: 1;
+				}
+
+				&::before {
+					background-color: var(--bg-color);
+				}
+			}
+		}
+	}
+
+	.selectedWrapper {
+		width: max-content;
+		height: 8em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 1em;
+		font-weight: 500;
+
+		.selected {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.title {
+			background-color: var(--fg-color);
+			padding: 0.5em;
+			padding-right: 2em;
+			padding-left: 2em;
+			color: var(--bg-color);
+			position: relative;
+			display: flex;
+			align-items: center;
+
+			&::before {
+				position: absolute;
+				content: '';
+				height: 1em;
+				aspect-ratio: 1 / 1;
+				width: auto;
+				background-color: var(--bg-color);
+				left: 0.5em;
+				transition: 0.15s ease-out;
+			}
+		}
+
+		.description {
+			background-color: var(--ac-color);
+			padding: 0.5em;
+		}
+	}
+
+	.listName {
+		position: absolute;
+		top: 2em;
+		right: 2em;
+		display: flex;
+		flex-direction: column;
+		font-weight: 500;
+
+		.title {
+			padding: 0.5em;
+			padding-left: 2em;
+			padding-right: 2em;
+			position: relative;
+			background-color: var(--fg-color);
+			color: var(--bg-color);
+			display: flex;
+			align-items: center;
+
+			&::before {
+				position: absolute;
+				content: '';
+				height: 1em;
+				aspect-ratio: 1 / 1;
+				width: auto;
+				background-color: var(--bg-color);
+				left: 0.5em;
+				transition: 0.15s ease-out;
+			}
+		}
+
+		.description {
+			padding: 0.5em;
+			background-color: var(--ac-color);
+		}
+	}
+}

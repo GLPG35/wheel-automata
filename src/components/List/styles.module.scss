@@ -1,0 +1,530 @@
+@use 'sass:math';
+@use 'sass:list';
+@use 'sass:color';
+
+.list {
+	flex: 1;
+	height: 100%;
+	padding: 2em;
+	display: flex;
+	flex-direction: column;
+	gap: 2em;
+
+	.input {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: 1em;
+
+		input {
+			width: 100%;
+			padding: 0.7em 1em;
+			border-bottom: 2px solid var(--ac-color);
+			color: var(--fg-color);
+			font-weight: 500;
+			transition: 0.2s ease-out;
+
+			&:focus {
+				border-bottom: 2px solid var(--fg-color);
+			}
+
+			&::-webkit-input-placeholder {
+				color: var(--fg-color);
+			}
+			
+			&::-moz-placeholder {
+				color: var(--fg-color);
+			}
+			
+			&::-ms-placeholder {
+				color: var(--fg-color);
+			}
+			
+			&::placeholder {
+				color: var(--fg-color);
+			}
+		}
+
+		.add {
+			height: 70%;
+			font-size: 1em;
+			font-weight: 500;
+			display: flex;
+			gap: 0.5em;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			padding: 0.3em;
+			color: var(--fg-color);
+			background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+			background-size: 200% 100%;
+			background-position: right;
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+			position: relative;
+
+			&::before {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: calc(100% + 0.5em);
+				border-block: 0.15em solid var(--fg-color);
+				left: 0;
+				opacity: 0;
+				transition: 0.2s ease-out;
+			}
+
+			&:hover {
+				background-position: left;
+				color: var(--bg-color);
+
+				&::before {
+					opacity: 1;
+				}
+
+				.icon {
+					color: var(--bg-color);
+				}
+			}
+
+			.icon {
+				height: 95%;
+				width: auto;
+				aspect-ratio: 1 / 1;
+				padding: 0.1em;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 2.3em;
+				color: var(--fg-color);
+				transition: 0.15s ease-out;
+			}
+		}
+	}
+
+	h2 {
+		font-size: 1.8em;
+		font-weight: 600;
+		line-height: 0.2em;
+		margin-top: 0.5em;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		filter: drop-shadow(5px 5px 0 var(--ac-color));
+
+		span {
+			font-weight: 500;
+			font-size: 0.7em;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5em;
+			cursor: pointer;
+			user-select: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+
+			.icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+		}
+	}
+
+	.itemsWrapper {
+		width: 100%;
+		max-height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+	}
+
+	.items {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+		padding-left: 3.5em;
+		position: relative;
+
+		@keyframes animateBars {
+			from {
+				transform: scaleY(0);
+			}
+
+			to {
+				transform: scaleY(1);
+			}
+		}
+
+		&::before {
+			position: absolute;
+			content: '';
+			height: 100%;
+			top: 0;
+			left: 0;
+			width: 0.7em;
+			background-color: var(--ac-color);
+			animation: animateBars 0.3s cubic-bezier(0.08,0.82,0.17,1) forwards;
+			z-index: -1;
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+		}
+
+		&::after {
+			position: absolute;
+			content: '';
+			height: 100%;
+			top: 0;
+			left: 1em;
+			width: 0.2em;
+			background-color: var(--ac-color);
+			animation: animateBars 0.3s cubic-bezier(0.08,0.82,0.17,1) forwards;
+			z-index: -1;
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+		}
+
+		.arrowWrapper {
+			position: absolute;
+			width: 2.1em;
+			height: 0.9em;
+			left: -3.2em;
+			z-index: 3;
+			opacity: 0;
+			transition: 0.2s ease-out;
+
+			.wrapper {
+				width: 100%;
+				height: 100%;
+				position: relative;
+
+				&::before {
+					position: absolute;
+					content: '';
+					width: 4px;
+					height: 4px;
+					background-color: var(--fg-color);
+					top: -4px;
+					right: 0;
+				}
+
+				&::after {
+					position: absolute;
+					content: '';
+					width: 4px;
+					height: 4px;
+					background-color: var(--fg-color);
+					bottom: -4px;
+					right: 0;
+				}
+				
+				.arrow {
+					width: 100%;
+					height: 100%;
+					background-color: var(--fg-color);
+					clip-path: polygon(0% 50%, calc(100% / 3) 0%, 100% 50%, calc(100% / 3) 100%, 0% 50%);
+					position: relative;
+					display: flex;
+					align-items: center;
+
+					&::before {
+						position: absolute;
+						content: '';
+						height: 25%;
+						aspect-ratio: 1 / 1;
+						width: auto;
+						border-radius: 50vh;
+						background-color: var(--bg-color);
+						left: 0.45em;
+					}
+				}
+			}
+		}
+
+		.item {
+			padding: 0.5em 1.5em;
+			padding-left: 2em;
+			display: flex;
+			align-items: center;
+			justify-content: left;
+			background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+			background-size: 200% 100%;
+			background-position: right;
+			color: var(--fg-color);
+			cursor: pointer;
+			user-select: none;
+			position: relative;
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+
+			&:hover {
+				color: var(--bg-color);
+				background-position: left;
+				
+				&::before {
+					background-color: var(--bg-color);
+				}
+
+				&::after {
+					opacity: 1;
+				}
+
+				.arrowWrapper {
+					opacity: 1;
+				}
+			}
+
+			&::before {
+				position: absolute;
+				content: '';
+				height: 1em;
+				aspect-ratio: 1 / 1;
+				width: auto;
+				background-color: var(--fg-color);
+				left: 0.5em;
+				transition: 0.15s ease-out;
+			}
+
+			&::after {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: calc(100% + 0.5em);
+				border-block: 0.15em solid var(--fg-color);
+				left: 0;
+				opacity: 0;
+				transition: 0.2s ease-out;
+			}
+		}
+
+		.element {
+			padding: 0.5em 1.5em;
+			padding-left: 2em;
+			display: flex;
+			align-items: center;
+			justify-content: left;
+			background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+			background-size: 200% 100%;
+			background-position: right;
+			color: var(--fg-color);
+			cursor: pointer;
+			user-select: none;
+			position: relative;
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+
+			&.active {
+				background-position: left;
+				color: var(--bg-color);
+
+				&::before {
+					background-color: var(--bg-color);
+				}
+
+				&::after {
+					opacity: 1;
+				}
+			}
+
+			&:hover {
+				.arrowWrapper {
+					opacity: 1;
+				}
+			}
+
+			&::before {
+				position: absolute;
+				content: '';
+				height: 1em;
+				aspect-ratio: 1 / 1;
+				width: auto;
+				background-color: var(--fg-color);
+				left: 0.5em;
+				transition: 0.15s ease-out;
+			}
+
+			&::after {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: calc(100% + 0.5em);
+				border-block: 0.15em solid var(--fg-color);
+				left: 0;
+				opacity: 0;
+				transition: 0.2s ease-out;
+			}
+		}
+	}
+
+	.actions {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 1.5em;
+
+		.selectAll {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5em;
+			cursor: pointer;
+
+			.box {
+				width: 1.2em;
+				height: 1.2em;
+				border: 2px solid var(--fg-color);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: 0.2s ease-out;
+
+				.subIcon {
+					font-size: 1em;
+					color: var(--bg-color);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				&.active {
+					background-color: var(--fg-color);
+				}
+			}
+
+			.icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.4em;
+			}
+		}
+
+		.delete {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+
+			.icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0.3em;
+				aspect-ratio: 1 / 1;
+				font-size: 1.4em;
+				cursor: pointer;
+				background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+				background-size: 200% 100%;
+				background-position: right;
+				color: var(--fg-color);
+				transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+
+				&:hover {
+					background-position: left;
+					color: var(--bg-color);
+
+					&::after {
+						opacity: 1;
+					}
+				}
+
+				&::after {
+					position: absolute;
+					content: '';
+					width: 100%;
+					height: calc(100% + 0.4em);
+					border-block: 0.1em solid var(--fg-color);
+					left: 0;
+					opacity: 0;
+					transition: 0.2s ease-out;
+				}
+			}
+		}
+	}
+
+	.empty {
+		width: 100%;
+		font-size: 1.2em;
+		gap: 0.5em;
+
+		span {
+			display: flex;
+			gap: 0.5em;
+			padding: 0.5em;
+			background-color: var(--ac-color);
+			align-items: center;
+
+			.icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1em;
+				background-color: var(--fg-color);
+				color: var(--bg-color);
+				padding: 0.3em;
+			}
+		}
+	}
+
+	.addWheel {
+		margin-top: auto;
+		width: 100%;
+		padding: 0.7em;
+		font-weight: 600;
+		color: var(--fg-color);
+		background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+		background-size: 200% 100%;
+		background-position: right;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: left;
+		gap: 0.5em;
+		transition: opacity 0.2s ease-out;
+		user-select: none;
+		transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+		position: relative;
+
+		&:hover:not(.disabled) {
+			color: var(--bg-color);
+			background-position: left;
+
+			&::after {
+				opacity: 1;
+			}
+
+			.icon {
+				background-color: var(--bg-color);
+				color: var(--fg-color);
+			}
+		}
+
+		&::after {
+			position: absolute;
+			content: '';
+			width: 100%;
+			height: calc(100% + 0.5em);
+			border-block: 0.15em solid var(--fg-color);
+			left: 0;
+			opacity: 0;
+			transition: 0.2s ease-out;
+		}
+		
+		&.disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+		.icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.3em;
+			background-color: var(--fg-color);
+			color: var(--bg-color);
+			padding: 0.2em;
+			transition: 0.15s ease-out;
+		}
+	}
+}

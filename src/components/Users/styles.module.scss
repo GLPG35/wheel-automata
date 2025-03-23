@@ -1,0 +1,232 @@
+.users {
+	position: fixed;
+	bottom: 2em;
+	right: 2em;
+	display: flex;
+	gap: 1em;
+
+	.controls {
+		padding: 0.2em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1em;
+		position: relative;
+
+		.settings,
+		.tracks,
+		.trackDetails {
+			position: absolute;
+			right: 0;
+			bottom: 4em;
+			display: flex;
+			flex-direction: column;
+			z-index: 50;
+
+			.back {
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				cursor: pointer;
+				gap: 0.5em;
+				width: 100%;
+				padding-block: 1em;
+	
+				&:hover {
+					text-decoration: underline;
+				}
+	
+				.icon {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+			}
+
+			.options {
+				display: flex;
+				flex-direction: column;
+				gap: 1em;
+				width: 100%;
+
+				.option {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					gap: 5em;
+					cursor: pointer;
+					background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+					background-size: 200% 100%;
+					background-position: right;
+					color: var(--fg-color);
+					cursor: pointer;
+					user-select: none;
+					position: relative;
+					transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+					padding: 0.5em;
+					padding-left: 2em;
+
+					&:hover,
+					&.active {
+						color: var(--bg-color);
+						background-position: left;
+						
+						&::before {
+							background-color: var(--bg-color);
+						}
+
+						&::after {
+							opacity: 1;
+						}
+
+						.bar {
+							&::before {
+								border-block: 2px solid var(--bg-color);
+							}
+							
+							.line {
+								background-color: var(--bg-color);
+							}
+						}
+					}
+
+					&::before {
+						position: absolute;
+						content: '';
+						height: 1em;
+						aspect-ratio: 1 / 1;
+						width: auto;
+						background-color: var(--fg-color);
+						left: 0.5em;
+						transition: 0.15s ease-out;
+					}
+
+					&::after {
+						position: absolute;
+						content: '';
+						width: 100%;
+						height: calc(100% + 0.5em);
+						border-block: 0.15em solid var(--fg-color);
+						left: 0;
+						opacity: 0;
+						transition: 0.2s ease-out;
+					}
+
+					.description {
+						width: max-content;
+					}
+
+					.bar {
+						height: 100%;
+						display: flex;
+						gap: 3px;
+						width: max-content;
+						align-items: center;
+						position: relative;
+						margin-right: 1em;
+
+						&::before {
+							position: absolute;
+							right: 0;
+							width: 0.25em;
+							height: 1.7em;
+							content: '';
+							border-block: 2px solid var(--fg-color);
+							transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+						}
+
+						.line {
+							width: 3px;
+							height: auto;
+							background-color: var(--fg-color);
+							transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+						}
+					}
+
+					.trackName {
+						display: flex;
+
+						.name {
+							overflow: hidden;
+							white-space: nowrap;
+							width: max-content;
+							max-width: 20ch;
+							text-overflow: ellipsis;
+						}
+					}
+				}
+			}
+		}
+
+		.tracks {
+			.options {
+				max-height: 20em;
+				overflow-y: auto;
+				overflow-x: hidden;
+				padding-block: 0.5em;
+				direction: rtl;
+				
+				> * {
+					direction: ltr;
+				}
+			}
+
+			
+		}
+
+		.trackDetails {
+			.options {
+				.option {
+					&.active {
+						background-position: left;
+						color: var(--bg-color);
+					}
+				}
+			}
+		}
+
+		button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+			background-size: 200% 100%;
+			background-position: right;
+			color: var(--fg-color);
+			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+			cursor: pointer;
+			position: relative;
+
+			&::after {
+				position: absolute;
+				content: '';
+				width: 100%;
+				height: calc(100% + 0.5em);
+				border-block: 0.15em solid var(--fg-color);
+				left: 0;
+				opacity: 0;
+				transition: 0.2s ease-out;
+			}
+
+			&:hover {
+				background-position: left;
+				color: var(--bg-color);
+
+				&::after {
+					opacity: 1;
+				}
+			}
+
+			.icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0.3em;
+				aspect-ratio: 1 / 1;
+				font-size: 1.5em;
+			}
+		}
+	}
+}
