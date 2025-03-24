@@ -20,20 +20,13 @@ const SubMusic = memo(({ render }: { render: boolean }) => {
 		}
 	} })
 	const [playBgm2, { sound: sound2, stop: stopBgm2 }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].path[1], { volume: musicMute ? 0 : bgmVolume / 100 })
-	const [playVcc, { stop: stopVcc }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].voiced ? bgm.vcc[0].path[0] : silence, { volume: musicMute ? 0 : vccVolume / 100, onload: () => {
+	const [playVcc, { sound: sound3, stop: stopVcc }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].voiced ? bgm.vcc[0].path[0] : silence, { volume: musicMute ? 0 : vccVolume / 100, onload: () => {
 		if (!bgmPreferences[bgmName].loaded.vcc) {
 			setVccLoaded(true)
 			addLoadedPreference(bgmName as keyof typeof bgmList)
 		}
 	} })
-	const [playVcc2, { stop: stopVcc2 }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].voiced ? bgm.vcc[0].path[1] : silence, { volume: musicMute ? 0 : bgmVolume / 100 })
-	
-	useEffect(() => {
-		return () => {
-			stopBgm(); stopVcc()
-			stopBgm2(); stopVcc2()
-		}
-	}, [render])
+	const [playVcc2, { sound: sound4, stop: stopVcc2 }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].voiced ? bgm.vcc[0].path[1] : silence, { volume: musicMute ? 0 : bgmVolume / 100 })
 	
 	useEffect(() => {
 		if (bgmPreferences[bgmName].loaded.bgm[bgmPreferences[bgmName].variant]) {
@@ -67,7 +60,13 @@ const SubMusic = memo(({ render }: { render: boolean }) => {
 		
 		return () => {
 			if (sound) {
+				stopBgm()
 				sound.off('end')
+			}
+
+			if (sound3) {
+				stopVcc()
+				stopVcc()
 			}
 		}
 	}, [sound])
@@ -87,7 +86,13 @@ const SubMusic = memo(({ render }: { render: boolean }) => {
 
 		return () => {	
 			if (sound2) {
+				stopBgm2()
 				sound2.off('end')
+			}
+
+			if (sound4) {
+				stopVcc2()
+				stopVcc2()
 			}
 		}
 	}, [sound2])
