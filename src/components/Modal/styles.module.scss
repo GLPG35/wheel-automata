@@ -1,9 +1,11 @@
 .modal {
 	position: absolute;
-	right: -750%;
+	right: 0;
+	translate: 115%;
 	display: flex;
 	flex-direction: column;
 	font-size: 1em;
+	width: max-content;
 	max-width: 15em;
 
 	.title {
@@ -13,6 +15,8 @@
 		background-color: var(--fg-color);
 		color: var(--er-color);
 		position: relative;
+		display: flex;
+		align-items: center;
 
 		&::before {
 			position: absolute;

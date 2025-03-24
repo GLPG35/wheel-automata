@@ -729,6 +729,7 @@ interface State {
 	setList: (list: List) => void,
 	addElement: (listName: string, element: Element) => void,
 	deleteElement: (listName: string, elements: string[]) => void,
+	deleteList: (listName: string) => void,
 	setSpinning: (spinning: boolean) => void,
 	setUser: (user: User) => void,
 	setUsers: (users: { username: string, pic: number }[]) => void,
@@ -764,9 +765,9 @@ export const useListStore = create<State>()(persist((set, get) => ({
 		set({ allLists })
 	},
 	addAllLists: (listName) => {
-		const { allLists } = get()
+		const { allLists, list } = get()
 
-		set({ allLists: [...allLists, listName] })
+		set({ allLists: [...allLists, listName], list: {...list, [listName.name]: []} })
 	},
 	setList: (list) => {
 		set({ list })
@@ -782,6 +783,12 @@ export const useListStore = create<State>()(persist((set, get) => ({
 		list[listName] = list[listName].filter(x => !elements.includes(x.name))
 
 		set({ list })
+	},
+	deleteList: (listName) => {
+		const { allLists } = get()
+		const newList = allLists.filter(x => x.name !== listName)
+
+		set({ allLists: newList })
 	},
 	setSpinning: (spinning) => {
 		set({ spinning })

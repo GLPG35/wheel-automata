@@ -47,10 +47,10 @@
 
 		.add {
 			height: 70%;
-			font-size: 1em;
+			aspect-ratio: 1 / 1;
+			width: auto;
 			font-weight: 500;
 			display: flex;
-			gap: 0.5em;
 			align-items: center;
 			justify-content: center;
 			cursor: pointer;
@@ -61,6 +61,7 @@
 			background-position: right;
 			transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
 			position: relative;
+			padding: 1em;
 
 			&::before {
 				position: absolute;
@@ -87,14 +88,10 @@
 			}
 
 			.icon {
-				height: 95%;
-				width: auto;
-				aspect-ratio: 1 / 1;
-				padding: 0.1em;
+				font-size: 1.4em;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				font-size: 2.3em;
 				color: var(--fg-color);
 				transition: 0.15s ease-out;
 			}
@@ -447,6 +444,9 @@
 		width: 100%;
 		font-size: 1.2em;
 		gap: 0.5em;
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 
 		span {
 			display: flex;
@@ -463,6 +463,65 @@
 				background-color: var(--fg-color);
 				color: var(--bg-color);
 				padding: 0.3em;
+			}
+		}
+
+		.delete {
+			font-size: 0.9em;
+			position: relative;
+			display: flex;
+			align-items: center;
+
+			.description {
+				color: var(--fg-color);
+				transition: 0.3s cubic-bezier(0.08,0.82,0.17,1);
+				position: relative;
+				padding: 0.5em 1.5em;
+				padding-left: 2em;
+				display: flex;
+				align-items: center;
+				justify-content: left;
+				background-image: linear-gradient(to left, var(--ac-color) 0%, var(--ac-color) 50%, var(--fg-color) 50%, var(--fg-color) 100%);
+				background-size: 200% 100%;
+				background-position: right;
+				cursor: pointer;
+				user-select: none;
+				width: 100%;
+
+				&:hover {
+					background-position: left;
+					color: var(--bg-color);
+
+					&::before {
+						background-color: var(--bg-color);
+					}
+	
+					&::after {
+						opacity: 1;
+					}
+				}
+
+				&::before {
+					position: absolute;
+					content: '';
+					height: 1em;
+					aspect-ratio: 1 / 1;
+					width: auto;
+					background-color: var(--fg-color);
+					left: 0.5em;
+					transition: 0.15s ease-out;
+				}
+	
+				&::after {
+					position: absolute;
+					content: '';
+					width: 100%;
+					height: calc(100% + 0.5em);
+					border-block: 0.15em solid var(--fg-color);
+					left: 0;
+					opacity: 0;
+					transition: 0.2s ease-out;
+				}
 			}
 		}
 	}

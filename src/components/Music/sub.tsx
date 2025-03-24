@@ -30,8 +30,8 @@ const SubMusic = memo(({ render }: { render: boolean }) => {
 	
 	useEffect(() => {
 		return () => {
-			if (sound && sound.playing()) { stopBgm(); stopVcc() }
-			if (sound2 && sound2.playing()) { stopBgm2(); stopVcc2() }
+			stopBgm(); stopVcc()
+			stopBgm2(); stopVcc2()
 		}
 	}, [render])
 	
@@ -46,8 +46,6 @@ const SubMusic = memo(({ render }: { render: boolean }) => {
 	}, [render, bgmLoaded, vccLoaded])
 
 	useEffect(() => {
-		console.log(bgmLoaded, vccLoaded)
-		
 		if (bgmLoaded && vccLoaded) {	
 			playBgm()
 			playVcc()

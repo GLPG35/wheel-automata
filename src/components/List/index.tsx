@@ -23,17 +23,18 @@ const List = () => {
 	const setList = useListStore(state => state.setList)
 	const addElement = useListStore(state => state.addElement)
 	const deleteElement = useListStore(state => state.deleteElement)
+	const deleteList = useListStore(state => state.deleteList)
 	const spinning = useListStore(state => state.spinning)
 	const user = useListStore(state => state.user)
 	const setUsers = useListStore(state => state.setUsers)
 	const sfxMute = useListStore(state => state.sfxMute)
 	const sfxVolume = useListStore(state => state.sfxVolume)
 	const [add, setAdd] = useState('')
-	const [ogSize, setOgSize] = useState(0)
 	const [selected, setSelected] = useState('')
 	const [listSize, setListSize] = useState<number>()
 	const [listSelected, setListSelected] = useState<{ name: string }[]>([])
 	const [deleteConfirmation, setDeleteConfirmation] = useState(false)
+	const [deleteConfirmation2, setDeleteConfirmation2] = useState(false)
 	const [playHover] = useSound(hover, { volume: sfxMute ? 0 : sfxVolume / 100 })
 	const [playSelect] = useSound(select, { volume: sfxMute ? 0 : (sfxVolume * 0.5) / 100 })
 	const [playDeselect] = useSound(deselect, { volume: sfxMute ? 0 : sfxVolume / 100 })
@@ -51,7 +52,7 @@ const List = () => {
 			const data = JSON.parse(message.data)
 			const { type } = data
 
-			return ['addedList', 'addedElement', 'deletedElement', 'userConnected'].includes(type)
+			return ['addedList', 'addedElement', 'deletedElement', 'deletedList', 'userConnected'].includes(type)
 		},
 		onOpen: () => console.log('Connection opened'),
 		shouldReconnect: () => true,
@@ -75,7 +76,7 @@ const List = () => {
 					}
 				},
 				'addedElement': () => {
-					if (added && listName && list[listName].length > 0) {
+					if (added && listName && (list[listName].length > 0 || listName == selected)) {
 						addElement(listName, { name: added as string })
 						setListSize(list[listName].length)
 					}
@@ -87,6 +88,12 @@ const List = () => {
 						deleteElement(listName, added as string[])
 						setListSize(list[listName].length)
 						setListSelected(newSelected)
+					}
+				},
+				'deletedList': () => {
+					if (listName) {
+						deleteList(listName)
+						setSelected('')
 					}
 				},
 				'userConnected': () => {
@@ -109,7 +116,6 @@ const List = () => {
 		.then(res => res.json())
 		.then(res => {
 			setAllLists(res)
-			setOgSize(res.length)
 
 			const list: { [key: string]: { name: string }[] } = {}
 			
@@ -185,6 +191,10 @@ const List = () => {
 		setDeleteConfirmation(true)
 	}
 
+	const handleCategoryDelete = () => {
+		setDeleteConfirmation2(true)
+	}
+
 	const handleConfirmDelete = () => {
 		setDeleteConfirmation(false)
 
@@ -192,6 +202,14 @@ const List = () => {
 			const parseList = listSelected.map(({ name }) => name)
 
 			sendJsonMessage({ type: 'deleteElement', listName: selected, value: parseList })
+		}
+	}
+
+	const handleConfirmDelete2 = () => {
+		setDeleteConfirmation2(false)
+
+		if (selected) {
+			sendJsonMessage({ type: 'deleteList', listName: selected })
 		}
 	}
 
@@ -216,7 +234,7 @@ const List = () => {
 		<div className={styles.list}>
 			<div className={styles.input}>
 				<input type="text" name={selected ? 'addElement' : 'addList'} placeholder={selected ? 'Add element...' : 'Add category...'} onKeyDown={handleKey} onInput={handleInput} value={add} onFocus={() => playSelect()} onBlur={() => playBack()} />
-				<button className={styles.add} onClick={handleAdd} onMouseOver={() => playHover()}>
+				<button className={styles.add} onClick={handleAdd} onMouseEnter={() => playHover()}>
 					<div className={styles.icon}>
 						<PiPlusBold />
 					</div>
@@ -225,7 +243,7 @@ const List = () => {
 			<h2>
 				{selected || 'CATEGORY'}
 				{selected &&
-					<span onClick={() => { playBack(); setSelected(''); setListSize(undefined); setListSelected([]) }} onMouseOver={() => playHover()}>
+					<span onClick={() => { playBack(); setSelected(''); setListSize(undefined); setListSelected([]) }} onMouseEnter={() => playHover()}>
 						<div className={styles.icon}>{<PiCaretLeftBold />}</div>
 						Back
 					</span>
@@ -265,12 +283,12 @@ const List = () => {
 				<div className={styles.itemsWrapper} key={selected}>
 					<motion.div className={styles.items} key={selected}>
 						{!selected ? allLists.length > 0 && allLists.map(({ name }, i) => {
-							const delay = i > (ogSize - 1) ? 0 : i == 0 ? 0 : i / 10
+							const delay = i > (listSize as number - 1) ? 0 : i == 0 ? 0 : i / 10
 							
 							return (
 								<motion.div className={styles.item} key={name} initial={{ opacity: 0, x: -15 }}
 								animate={{ opacity: 1, x: 0, transition: { delay } }}
-								onClick={() => { playSelect(); setSelected(name) }} onMouseOver={() => playHover()}>
+								onClick={() => { playSelect(); setSelected(name) }} onMouseEnter={() => playHover()}>
 									{name}
 									<div className={styles.arrowWrapper}>
 										<div className={styles.wrapper}>
@@ -298,7 +316,7 @@ const List = () => {
 							}
 
 							return (
-								<motion.div className={`${styles.element} ${findSelected ? styles.active : ''}`} key={name} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0, transition: { delay } }} onClick={handleAdd} onMouseOver={() => playHover()}>
+								<motion.div className={`${styles.element} ${findSelected ? styles.active : ''}`} key={name} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0, transition: { delay } }} onClick={handleAdd} onMouseEnter={() => playHover()}>
 									{name}
 									<div className={styles.arrowWrapper}>
 										<div className={styles.wrapper}>
@@ -315,18 +333,30 @@ const List = () => {
 			{selected && listSize == undefined ?
 				<Spinner />
 			: selected && listSize !== undefined && listSize < 1 &&
-				<div className={styles.empty}>
-					<span>
-						<div className={styles.icon}>
-							<PiFolderSimpleDashedBold />
-						</div>
-						This category is empty
-					</span>
-				</div>
+				<>
+					<div className={styles.empty}>
+						<span>
+							<div className={styles.icon}>
+								<PiFolderSimpleDashedBold />
+							</div>
+							This category is empty
+						</span>
+						<motion.div className={styles.delete} initial={{ x: -15, opacity: 0 }} animate={{ x: 0, opacity: 1 }} onClick={handleCategoryDelete}>
+							<div className={styles.description} onMouseEnter={() => playHover()}>
+								Delete
+							</div>
+							<AnimatePresence>
+								{deleteConfirmation2 &&
+									<Modal title={'[Deletion confirmation]'} text={'Are you sure you want to delete this?'} close={() => { playBack(); setDeleteConfirmation2(false) }} action={() => { playOk(); handleConfirmDelete2() }} />
+								}
+							</AnimatePresence>
+						</motion.div>
+					</div>
+				</>
 			}
 			{selected && listSize !== undefined && listSize > 1 &&
 				<button className={`${styles.addWheel} ${listSelected.length < 2 || spinning ? styles.disabled : ''}`}
-				onClick={() => { if (listSelected.length < 2 || spinning) { playError() } else { playOk(); newWheel() }}} onMouseOver={() => !(listSelected.length < 2 || spinning) && playHover()}>
+				onClick={() => { if (listSelected.length < 2 || spinning) { playError() } else { playOk(); newWheel() }}} onMouseEnter={() => !(listSelected.length < 2 || spinning) && playHover()}>
 					<div className={styles.icon}>
 						<PiChartPieBold />
 					</div>
