@@ -13,7 +13,7 @@ const App = () => {
 	
 	useEffect(() => {
 		if (!user) {
-			fetch(`/auth`, {
+			fetch(`${import.meta.env.VITE_BACK_URL}/auth`, {
 				credentials: 'include'
 			}).then(res => {
 				if (res.ok) {
