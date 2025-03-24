@@ -105,7 +105,7 @@ const List = () => {
 	useEffect(() => {
 		if (allLists.length > 0) return
 		
-		fetch(`${import.meta.env.VITE_BACK_URL}/api/getLists`, { credentials: 'include' })
+		fetch(`${import.meta.env.VITE_BACK_URL}/api/getLists`, { credentials: 'include', mode: 'cors' })
 		.then(res => res.json())
 		.then(res => {
 			setAllLists(res)
@@ -125,7 +125,7 @@ const List = () => {
 
 	useEffect(() => {
 		if (selected && list[selected].length < 1) {
-			fetch(`${import.meta.env.VITE_BACK_URL}/api/getList/${selected}`, { credentials: 'include' })
+			fetch(`${import.meta.env.VITE_BACK_URL}/api/getList/${selected}`, { credentials: 'include', mode: 'cors' })
 			.then(res => res.json())
 			.then((res: {name: string}[]) => {
 				const newList = list

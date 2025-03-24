@@ -14,7 +14,8 @@ const App = () => {
 	useEffect(() => {
 		if (!user) {
 			fetch(`${import.meta.env.VITE_BACK_URL}/auth`, {
-				credentials: 'include'
+				credentials: 'include',
+				mode: 'cors'
 			}).then(res => {
 				if (res.ok) {
 					return res.json()

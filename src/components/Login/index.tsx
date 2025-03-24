@@ -32,7 +32,8 @@ const Login = () => {
 			}),
 			headers: {
 				'Content-Type': 'application/json'
-			}
+			},
+			mode: 'cors'
 		}).then(res => {
 			if (res.ok) {
 				return res.json()
