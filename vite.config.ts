@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://wheel-automata-server.sliplane.app',
+        target: 'https://wheel-automata-server.sliplane.app/api',
         changeOrigin: true
       },
       '/ws': {
