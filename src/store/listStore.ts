@@ -861,5 +861,16 @@ export const useListStore = create<State>()(persist((set, get) => ({
 	bgmPath: state.bgmPath,
 	vccPath: state.vccPath,
 	bgmVariant: state.bgmVariant,
-	sfxMute: state.sfxMute
+	sfxMute: state.sfxMute,
+	bgmPreferences: Object.fromEntries(Object.entries(state.bgmPreferences).map(([key, value]) => {
+		const { variant, loaded: { bgm } } = value
+	
+		return [
+			key,
+			{
+				variant,
+				loaded: { bgm: bgm.map(() => false), vcc: false }
+			}
+		]
+	}))
 })}))
