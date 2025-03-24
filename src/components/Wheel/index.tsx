@@ -43,7 +43,7 @@ const Wheel = () => {
 	const [playSpin] = useSound(spin, { volume: sfxMute ? 0 : (sfxVolume * 0.2) / 100 })
 	const [playPopup] = useSound(popup, { volume: sfxMute ? 0 : sfxVolume / 100 })
 
-	const { lastJsonMessage, sendJsonMessage } = useWebSocket(import.meta.env.VITE_WS_URL, {
+	const { lastJsonMessage, sendJsonMessage } = useWebSocket('/ws', {
 		share: true,
 		filter: (message) => {
 			const data = JSON.parse(message.data)

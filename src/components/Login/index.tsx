@@ -23,7 +23,7 @@ const Login = () => {
 
 		const { username, hash } = e.currentTarget
 		
-		fetch(`${import.meta.env.VITE_BACK_URL}/auth`, {
+		fetch(`/auth`, {
 			method: 'POST',
 			credentials: 'include',
 			body: JSON.stringify({

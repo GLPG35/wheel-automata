@@ -45,7 +45,7 @@ const List = () => {
 	const {
 		sendJsonMessage,
 		lastJsonMessage
-	} = useWebSocket(import.meta.env.VITE_WS_URL, {
+	} = useWebSocket('/ws', {
 		share: true,
 		filter: (message) => {
 			const data = JSON.parse(message.data)
@@ -105,7 +105,7 @@ const List = () => {
 	useEffect(() => {
 		if (allLists.length > 0) return
 		
-		fetch(`${import.meta.env.VITE_BACK_URL}/api/getLists`, { credentials: 'include' })
+		fetch(`/api/getLists`, { credentials: 'include' })
 		.then(res => res.json())
 		.then(res => {
 			setAllLists(res)
@@ -125,7 +125,7 @@ const List = () => {
 
 	useEffect(() => {
 		if (selected && list[selected].length < 1) {
-			fetch(`${import.meta.env.VITE_BACK_URL}/api/getList/${selected}`, { credentials: 'include' })
+			fetch(`/api/getList/${selected}`, { credentials: 'include' })
 			.then(res => res.json())
 			.then((res: {name: string}[]) => {
 				const newList = list
