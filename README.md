@@ -50,7 +50,7 @@ The URL of the server. For example: http://localhost:3000
 The URL of the websockets endpoint. For example: http://localhost:3000/ws
 
 > [!IMPORTANT]
-> You need the [WheeL: Automata (Server)](https://github.com/GLPG35/wheel-automata-server) running if you want the server to work.
+> You need the [WheeL: Automata (Server)](https://github.com/GLPG35/wheel-automata-server) running if you want the app to work.
 
 If you want to run it in developer mode write:
 
