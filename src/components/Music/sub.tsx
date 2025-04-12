@@ -26,7 +26,7 @@ const SubMusic = memo(({ render }: { render: boolean }) => {
 			addLoadedPreference(bgmName as keyof typeof bgmList)
 		}
 	} })
-	const [playVcc2, { sound: sound4, stop: stopVcc2 }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].voiced ? bgm.vcc[0].path[1] : silence, { volume: musicMute ? 0 : bgmVolume / 100 })
+	const [playVcc2, { sound: sound4, stop: stopVcc2 }] = useSound(bgm.bgm[bgmPreferences[bgmName].variant].voiced ? bgm.vcc[0].path[1] : silence, { volume: musicMute ? 0 : vccVolume / 100 })
 	
 	useEffect(() => {
 		if (bgmPreferences[bgmName].loaded.bgm[bgmPreferences[bgmName].variant]) {

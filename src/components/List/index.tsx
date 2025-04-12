@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styles from './styles.module.scss'
 import useWebSocket from 'react-use-websocket'
-import { PiCaretLeftBold, PiChartPieBold, PiCheckBold, PiFolderSimpleDashedBold, PiListChecksBold, PiMinusBold, PiPlusBold, PiTrashBold } from 'react-icons/pi'
+import { PiCaretLeftBold, PiChartPieBold, PiCheckBold, PiFolderSimpleDashedBold, PiListChecksBold, PiMinusBold, PiPlusBold, PiSortAscendingBold, PiSortDescendingBold, PiTrashBold } from 'react-icons/pi'
 import { AnimatePresence, motion } from 'framer-motion'
 import Spinner from '../Spinner'
 import Modal from '../Modal'
@@ -35,6 +35,7 @@ const List = () => {
 	const [listSelected, setListSelected] = useState<{ name: string }[]>([])
 	const [deleteConfirmation, setDeleteConfirmation] = useState(false)
 	const [deleteConfirmation2, setDeleteConfirmation2] = useState(false)
+	const [sort, setSort] = useState<'asc'|'desc'>('asc')
 	const [playHover] = useSound(hover, { volume: sfxMute ? 0 : sfxVolume / 100 })
 	const [playSelect] = useSound(select, { volume: sfxMute ? 0 : (sfxVolume * 0.5) / 100 })
 	const [playDeselect] = useSound(deselect, { volume: sfxMute ? 0 : sfxVolume / 100 })
@@ -229,7 +230,17 @@ const List = () => {
 			setDeleteConfirmation(false)
 		}
 	}
-	
+
+	const changeSort = () => {
+		playSelect()
+		
+		if (sort == 'asc') {
+			setSort('desc')
+		} else {
+			setSort('asc')
+		}
+	}
+
 	return (
 		<div className={styles.list}>
 			<div className={styles.input}>
@@ -251,16 +262,24 @@ const List = () => {
 			</h2>
 			{selected && listSize !== undefined && listSize > 0 &&
 				<div className={styles.actions}>
-					<div className={styles.selectAll} onClick={selectAll}>
-						<div className={`${styles.box} ${listSelected.length > 0 && styles.active}`}>
-							{listSelected.length > 0 &&
-								<div className={styles.subIcon}>
-									{listSelected.length === list[selected].length ? <PiCheckBold /> : listSelected.length < list[selected].length && <PiMinusBold />}
-								</div>
-							}
+					<div className={styles.left}>
+						<div className={styles.selectAll} onClick={selectAll}>
+							<div className={`${styles.box} ${listSelected.length > 0 && styles.active}`}>
+								{listSelected.length > 0 &&
+									<div className={styles.subIcon}>
+										{listSelected.length === list[selected].length ? <PiCheckBold /> : listSelected.length < list[selected].length && <PiMinusBold />}
+									</div>
+								}
+							</div>
+							<div className={styles.icon}>
+								<PiListChecksBold />
+							</div>
 						</div>
-						<div className={styles.icon}>
-							<PiListChecksBold />
+						<div className={styles.sortBy} onClick={changeSort}>
+							<div className={styles.icon}>
+								{sort == 'asc' ? <PiSortAscendingBold />
+								: <PiSortDescendingBold />}
+							</div>
 						</div>
 					</div>
 					<AnimatePresence>
@@ -297,7 +316,7 @@ const List = () => {
 									</div>
 								</motion.div>
 							)
-						}) : listSize !== undefined && listSize > 0 ? list[selected].map(({ name }, i) => {
+						}) : listSize !== undefined && listSize > 0 ? (sort == 'asc' ? list[selected].sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLocaleLowerCase() > b.name.toLowerCase() ? 1 : 0) : list[selected].sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? 1 : a.name.toLocaleLowerCase() > b.name.toLowerCase() ? -1 : 0)).map(({ name }, i) => {
 							const delay = i > (listSize - 1) ? 0 : i == 0 ? 0 : i / 10
 							const findSelected = listSelected.find(x => x.name === name)
 
@@ -316,7 +335,7 @@ const List = () => {
 							}
 
 							return (
-								<motion.div className={`${styles.element} ${findSelected ? styles.active : ''}`} key={name} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0, transition: { delay } }} onClick={handleAdd} onMouseEnter={() => playHover()}>
+								<motion.div className={`${styles.element} ${findSelected ? styles.active : ''}`} key={`${name}${sort}`} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0, transition: { delay } }} onClick={handleAdd} onMouseEnter={() => playHover()}>
 									{name}
 									<div className={styles.arrowWrapper}>
 										<div className={styles.wrapper}>

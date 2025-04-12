@@ -162,7 +162,7 @@ const Users = () => {
 		<div className={styles.users}>
 			<Music />
 			<AnimatePresence>
-				{users.map(({ username, pic }) => <User {...{username, pic}} />)}
+				{users.map(({ username, pic }) => <User key={username} {...{username, pic}} />)}
 			</AnimatePresence>
 			<div className={styles.controls}>
 				<AnimatePresence>

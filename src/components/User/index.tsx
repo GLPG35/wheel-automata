@@ -18,7 +18,7 @@ const User = ({ username, pic }: { username: string, pic: number }) => {
 		setTimeout(() => {
 			setHover(false)
 		}, 2000)
-	})
+	}, [])
 	
 	return (
 		<motion.div className={styles.user} key={username+pic} initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 15 }} layout onMouseEnter={() => { playHover(); setHover(true) }} onMouseLeave={() => setHover(false)}>

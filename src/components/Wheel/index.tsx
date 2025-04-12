@@ -29,12 +29,14 @@ const Wheel = () => {
 	const spinning = useListStore(state => state.spinning)
 	const sfxVolume = useListStore(state => state.sfxVolume)
 	const sfxMute = useListStore(state => state.sfxMute)
+	const user = useListStore(state => state.user)
 	const [wheel, setWheel] = useState<Wheel>([])
 	const calcDegrees = wheel.length > 0 && (360 / (wheel[1] as { name: string }[]).length)
 	const [scope, animate] = useAnimate()
 	const [turn, setTurn] = useState(false)
 	const [selected, setSelected] = useState<string>()
 	const [reset, setReset] = useState(false)
+	const [spinned, setSpinned] = useState(false)
 	const [playOk] = useSound(ok, { volume: sfxMute ? 0 : sfxVolume / 100 })
 	const [playSelect] = useSound(select, { volume: sfxMute ? 0 : (sfxVolume * 0.5) / 100 })
 	const [playHover] = useSound(hover, { volume: sfxMute ? 0 : sfxVolume / 100 })
@@ -49,7 +51,7 @@ const Wheel = () => {
 			const data = JSON.parse(message.data)
 			const { type } = data
 
-			return ['selected', 'spin', 'reset', 'deletedElement', 'cleared'].includes(type)
+			return ['selected', 'spin', 'reset', 'deletedElement', 'cleared', 'wheelEnded', 'spinning'].includes(type)
 		},
 		onOpen: () => console.log('Connection opened'),
 		shouldReconnect: () => true
@@ -57,9 +59,9 @@ const Wheel = () => {
 
 	useEffect(() => {
 		if (lastJsonMessage) {
-			const { type, listName, success, selected, random, added } = lastJsonMessage as { type: string, listName: string, success: boolean, selected: { name: string }[], random: [number, number], added: string }
+			const { type, listName, success, selected, random, added, username } = lastJsonMessage as { type: string, listName: string, success: boolean, selected: { name: string }[], random: [number, number], added: string, username?: string }
 
-			type ReqTypes = 'selected' | 'spin' | 'reset' | 'deletedElement' | 'cleared'
+			type ReqTypes = 'selected' | 'spin' | 'reset' | 'deletedElement' | 'cleared' | 'wheelEnded' | 'spinning'
 			
 			const reqTypes = {
 				'selected': () => {
@@ -68,7 +70,38 @@ const Wheel = () => {
 					}
 				},
 				'spin': () => {
-					startTurning()
+					startTurning(username)
+				},
+				'spinning': () => {
+					console.log('spinning')
+					setSpinning(true)
+				},
+				'wheelEnded': () => {
+					if (calcDegrees && !spinned) {
+						const random = (wheel[2] as [number, number])[0] as number
+			
+						const baseAngle = calcDegrees / 2
+						const createRanges = (wheel[1] as { name: string }[]).map(({ name }, i) => {
+							const rawMax = baseAngle + (calcDegrees * (i + 1))
+							const max = rawMax > 360 ? rawMax - 360 : rawMax
+							const rawMin = max - calcDegrees
+							const min = rawMin < 0 ? 360 + rawMin : rawMin
+
+							return {
+								min,
+								max,
+								name
+							}
+						})
+						
+						const matchOption = createRanges.filter(x => x.min < x.max ? random >= x.min && random <= x.max : random >= x.min || random <= x.max) as { min: number, max: number, name: string }[]
+						
+						const randomMatch = (wheel[2] as [number, number])[1] as number
+						const parseMatch = matchOption.length > 1 ? matchOption[randomMatch] : matchOption[0]
+
+						setSelected(parseMatch.name)
+						animate(scope.current, { rotate: (360 - (random + (randomMatch == 0 ? 2 : -2))) - (360) }, { type: 'spring', visualDuration: 0.2, bounce: 0.06 })
+					}
 				},
 				'reset': () => {
 					if (listName && selected && random) {
@@ -107,9 +140,10 @@ const Wheel = () => {
 		}
 	}, [lastJsonMessage])
 
-	const startTurning = async () => {
+	const startTurning = async (username?: string) => {
 		if (calcDegrees) {
 			setSpinning(true)
+			setSpinned(true)
 			playSpin()
 
 			const random = (wheel[2] as [number, number])[0] as number
@@ -138,6 +172,7 @@ const Wheel = () => {
 			setSpinning(false)
 			setTurn(false)
 			setSelected(parseMatch.name)
+			if (username && username == user?.username) sendJsonMessage({ type: 'endWheel' })
 			playPopup()
 		}
 	}

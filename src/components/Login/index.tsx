@@ -70,7 +70,7 @@ const Login = () => {
 			<motion.div className={styles.logo} initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 5 } }}>
 				<img src="/yorha.webp" alt="" />
 			</motion.div>
-			<motion.form onSubmit={handleSubmit} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0, transition: { duration: 1 } }}>
+			<motion.form autoComplete='off' onSubmit={handleSubmit} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0, transition: { duration: 1 } }}>
 				<div className={styles.title}>
 					[Provide your credentials]
 				</div>
